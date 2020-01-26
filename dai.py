@@ -3,7 +3,8 @@ from iottalkpy import dan
 import random, time
 from config import (IoTtalk_URL, username,
                     device_addr, device_name, device_model,
-                    idf_list, odf_list)
+                    idf_list, odf_list,
+                    time_interval)
 
 ''' IoTtalk data handler '''
 def on_data(odf_name, data):
@@ -36,11 +37,11 @@ context = dan.register(
     on_deregister=on_deregister
 )
 
-# Get location
+# Locolization Setting
 '''geolocator = Nominatim()
 location = geolocator.geocode("175 5th Avenue NYC")
 print(location.addres)'''
 
 while True:
-    dan.push('Dummy_Sensor', [random.randint(1,10)])
-    time.sleep(10)
+    dan.push('Dummy_Sensor', [random.randint(0, 100)])
+    time.sleep(time_interval)

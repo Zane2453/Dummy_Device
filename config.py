@@ -10,3 +10,5 @@ idf_list = [
 odf_list = [
     ['Dummy_Control', ['int']]
 ]
+
+time_interval = 1
