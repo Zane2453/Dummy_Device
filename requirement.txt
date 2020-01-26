@@ -1,0 +1,2 @@
+iottalk-py==2.2.0
+geopy==1.1.0
