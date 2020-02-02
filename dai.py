@@ -1,6 +1,6 @@
 from iottalkpy import dan
-#from geopy.geocoders import Nominatim
-import random, time
+from geopy.geocoders import Nominatim
+import random, time, requests
 from config import (IoTtalk_URL, username,
                     device_addr, device_name, device_model,
                     idf_list, odf_list,
@@ -28,7 +28,7 @@ context = dan.register(
     odf_list=odf_list,
     accept_protos=['mqtt'],
     name=device_name,
-    id_=device_addr,
+    #id_=device_addr,
     profile={
         'model': device_model,
         'u_name': username
@@ -38,10 +38,16 @@ context = dan.register(
 )
 
 # Locolization Setting
-'''geolocator = Nominatim()
-location = geolocator.geocode("175 5th Avenue NYC")
-print(location.addres)'''
+'''geolocator = Nominatim(user_agent="Google Maps")
+location = geolocator.geocode("Taichung, Taiwan")'''
+
+ip_request = requests.get('https://get.geojs.io/v1/ip.json')
+my_ip = ip_request.json()['ip']
+
+geo_request_url = 'https://get.geojs.io/v1/ip/geo/' + my_ip + '.json'
+geo_request = requests.get(geo_request_url)
+geo_data = geo_request.json()
 
 while True:
-    dan.push('Dummy_Sensor', [random.randint(0, 100)])
+    dan.push('Dummy_Sensor', [random.randint(0, 100), geo_data['latitude'], geo_data['longitude']])
     time.sleep(time_interval)
