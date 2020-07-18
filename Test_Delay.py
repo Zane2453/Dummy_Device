@@ -1,13 +1,21 @@
 from iottalkpy import dan
-import random, time, requests
+import time
 from config import (IoTtalk_URL, username,
                             device_name, device_model,
-                            idf_list, odf_list,
-                            time_interval)
+                            idf_list, odf_list)
+counter = 0
+delays = 0
 
 ''' IoTtalk data handler '''
 def on_data(odf_name, data):
-    dan.log.info(f"[da] {odf_name}: {data}")
+    global counter, delays
+    counter += 1
+    delay = time.time() - data[0]
+    delays += delay
+    print(f'{delay} second')
+    if counter == 100:
+        print(f'average {delays / 100} second')
+        exit()
 
 def on_signal(signal, df_list):
     dan.log.info('[cmd] %s, %s', signal, df_list)
@@ -36,18 +44,6 @@ context = dan.register(
     on_deregister=on_deregister
 )
 
-# Locolization Setting
-'''geolocator = Nominatim(user_agent="Google Maps")
-location = geolocator.geocode("Taichung, Taiwan")'''
-
-ip_request = requests.get('https://get.geojs.io/v1/ip.json')
-my_ip = ip_request.json()['ip']
-
-geo_request_url = 'https://get.geojs.io/v1/ip/geo/' + my_ip + '.json'
-geo_request = requests.get(geo_request_url)
-geo_data = geo_request.json()
-
 while True:
-    #dan.push('Dummy_Sensor', [random.randint(0, 100), geo_data['latitude'], geo_data['longitude']])
-    dan.push('Dummy_Sensor', [random.randint(0, 100)])
-    time.sleep(time_interval)
+    dan.push('Dummy_Sensor', [time.time()])
+    time.sleep(0.01)
